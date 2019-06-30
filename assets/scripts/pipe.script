@@ -1,0 +1,43 @@
+go.property("pipe_id", 0)
+
+function get_random_y()
+	return math.random(-20,120)
+end
+
+function init(self)
+	self.passed = false
+	local _pos = go.get_position()
+	_pos.x = 300 + self.pipe_id * 160
+	_pos.y = get_random_y()
+	go.set_position(_pos)
+end
+
+function update(self, dt)
+	local running = go.get("/main#main", "running")
+	if not running then return end
+	local pos = go.get_world_position()
+	local player_x = go.get_world_position("/player").x
+	if player_x - pos.x > 200 then
+		local _pos = go.get_position()
+		_pos.x = _pos.x + 480
+		_pos.y = get_random_y()
+		go.set_position(_pos)
+		self.passed = false
+	elseif not self.passed and player_x > pos.x then
+		self.passed = true
+		local score = go.get("/main#main", "score") + 1
+		go.set("/main#main", "score", score)
+		msg.post("/sounds#point", "play_sound")
+		msg.post("/main#gui", "update_score", {score = score})
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("reset") then
+		self.passed = false
+		local _pos = go.get_position()
+		_pos.x = 300 + self.pipe_id * 160
+		_pos.y = get_random_y()
+		go.set_position(_pos)
+	end
+end

@@ -1,0 +1,72 @@
+images {
+  image: "/assets/sprites/base.png"
+}
+images {
+  image: "/assets/sprites/gameover.png"
+}
+images {
+  image: "/assets/sprites/message.png"
+}
+images {
+  image: "/assets/sprites/pipe-green.png"
+}
+images {
+  image: "/assets/sprites/pipe-red.png"
+}
+images {
+  image: "/assets/sprites/background-day.png"
+}
+images {
+  image: "/assets/sprites/background-night.png"
+}
+animations {
+  id: "yellow-bird"
+  images {
+    image: "/assets/sprites/yellowbird-downflap.png"
+  }
+  images {
+    image: "/assets/sprites/yellowbird-midflap.png"
+  }
+  images {
+    image: "/assets/sprites/yellowbird-upflap.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 12
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "red-bird"
+  images {
+    image: "/assets/sprites/redbird-downflap.png"
+  }
+  images {
+    image: "/assets/sprites/redbird-midflap.png"
+  }
+  images {
+    image: "/assets/sprites/redbird-upflap.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 12
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+animations {
+  id: "blue-bird"
+  images {
+    image: "/assets/sprites/bluebird-downflap.png"
+  }
+  images {
+    image: "/assets/sprites/bluebird-midflap.png"
+  }
+  images {
+    image: "/assets/sprites/bluebird-upflap.png"
+  }
+  playback: PLAYBACK_LOOP_FORWARD
+  fps: 12
+  flip_horizontal: 0
+  flip_vertical: 0
+}
+margin: 5
+extrude_borders: 5
+inner_padding: 5

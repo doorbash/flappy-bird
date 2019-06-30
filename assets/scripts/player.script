@@ -1,0 +1,89 @@
+function init(self)
+	msg.post(".", "acquire_input_focus")
+	self.gravity = -800
+	self.forward_velocity = 120
+	self.flap_velocity = 220
+	self.rotation_speed = .1
+	self.vx = 0
+	self.vy = 0
+	self.didFlap = false
+end
+
+function delay(seconds, fn)
+	go.animate("/dummy", "position.z", go.PLAYBACK_ONCE_FORWARD, 0, go.EASING_LINEAR, seconds, 0, fn)
+end
+
+function start()
+	go.set("/player#sprite", "playback_rate", 1)
+	go.set("/main#main", "running", true)
+end
+
+function reset()
+	local pos = go.get_position()
+	pos.y = 0
+	pos.x = 0
+	go.set_position(pos)
+	local rot = vmath.quat_rotation_z(0)
+	go.set_rotation(rot)
+	go.set("/main#main", "score", 0)
+	msg.post("/main#gui", "update_score", {score = 0})
+	msg.post("/pipe_1#pipe", "reset")
+	msg.post("/pipe_2#pipe", "reset")
+	msg.post("/pipe_3#pipe", "reset")
+	msg.post("/g1#ground", "reset")
+	msg.post("/g2#ground", "reset")
+	msg.post("/b1#background", "reset")
+	msg.post("/b2#background", "reset")
+	delay(1, start)
+end
+
+function update(self, dt)
+	local running = go.get("/main#main", "running")
+	if not running then return end
+	
+	local pos = go.get_position()
+
+	self.vx = self.forward_velocity
+	self.vy = self.vy + self.gravity * dt
+
+	if self.didFlap then
+		self.vy = self.flap_velocity
+		self.didFlap = false
+	end
+	
+	pos.x = pos.x + self.vx * dt
+	pos.y = pos.y + self.vy * dt
+
+	go.set_position(pos)
+
+	local deg = self.vy * self.rotation_speed
+	local rad = math.rad(deg)
+	local rot = vmath.quat_rotation_z(rad)
+	go.set_rotation(rot)
+end
+
+function on_message(self, message_id, message, sender)
+	local running = go.get("/main#main", "running")
+	if not running then return end
+	if message_id == hash("collision_response") then
+		if message.other_group == hash("pipe") or message.other_group == hash("ground") then
+			go.set("/main#main", "running", false)
+			msg.post("/sounds#hit", "play_sound")
+			msg.post("/sounds#die", "play_sound")
+			go.set("/player#sprite", "playback_rate", 0)
+			self.vx = 0
+			self.vy = 0
+			self.didFlap = false
+			delay(2, reset)
+		end
+	end
+end
+
+function on_input(self, action_id, action)
+	local running = go.get("/main#main", "running")
+	if not running then return end
+	if action_id == hash("touch") and action.pressed then
+		self.didFlap = true
+		msg.post("/sounds#wing", "play_sound")
+	end
+end

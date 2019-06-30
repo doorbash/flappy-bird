@@ -1,0 +1,3 @@
+function init(self)
+	sprite.set_hflip("#sprite",true)
+end

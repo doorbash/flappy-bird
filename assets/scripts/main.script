@@ -1,0 +1,2 @@
+go.property("score", 0)
+go.property("running", true)

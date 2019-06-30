@@ -1,0 +1,22 @@
+function init(self)
+	self.width = 288
+	self.init_pos = go.get_position()
+end
+
+function update(self, dt)
+	local running = go.get("/main#main", "running")
+	if not running then return end
+	local pos = go.get_world_position()
+	local player_x = go.get_world_position("/player").x
+	if player_x - pos.x > self.width then
+		local _pos = go.get_position()
+		_pos.x = _pos.x + 2 * self.width
+		go.set_position(_pos)
+	end
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("reset") then
+		go.set_position(self.init_pos)
+	end
+end
